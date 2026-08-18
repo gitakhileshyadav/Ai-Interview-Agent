@@ -2,7 +2,7 @@
 import { requireAuth, sendJSON, readBody } from './lib/auth.mjs'
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
-const MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'
+const MODEL = process.env.GROQ_MODEL || 'groq/compound'
 
 export default async function handler(req, res) {
   const user = await requireAuth(req, res)
