@@ -272,7 +272,7 @@ async function startInterviewSession(user) {
     await handleAIMessage(aiMsg)
   } catch (err) {
     console.error('AI error:', err)
-    showToast('Failed to connect to AI. Check API key.', 'error')
+    showToast(err.message || 'Failed to connect to AI. Check API key.', 'error')
     addMessage('ai', "Hello! I'm Alex, your interviewer today. I'm having a small technical issue — please try again in a moment.")
   }
 
