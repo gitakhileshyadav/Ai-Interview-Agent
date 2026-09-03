@@ -27,3 +27,9 @@ tmp
 *.njsproj
 *.sln
 *.sw?
+
+# Documentation
+docs/
+
+# Experiment folder
+exp/

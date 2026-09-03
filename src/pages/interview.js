@@ -266,9 +266,14 @@ async function startInterviewSession(user) {
   speechService = new SpeechService()
   setupSpeechCallbacks()
 
-  // Get first AI message
+  // Get first AI message - start with a system prompt and initial user greeting
   try {
-    const aiMsg = await getInterviewerResponse([], sessionConfig)
+    // Start with a minimal conversation history containing just a system prompt
+    // This ensures the API receives messages in the correct format
+    const aiMsg = await getInterviewerResponse(
+      [{ role: 'user', content: 'Hello' }],
+      sessionConfig
+    )
     await handleAIMessage(aiMsg)
   } catch (err) {
     console.error('AI error:', err)
@@ -379,8 +384,18 @@ async function handleUserMessage(text) {
   // Save to DB
   await saveMessage({ id: crypto.randomUUID(), sessionId, role: 'user', content: text })
 
-  // Add to history
-  conversationHistory.push({ role: 'user', content: text })
+  // Add to history - ensure we always have proper message ordering
+  // If conversationHistory ends with an assistant message, we need to handle it
+  // to ensure the API receives messages ending with a user message
+  if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === 'assistant') {
+    // Don't add user message if history ends with AI message - 
+    // this would make the API see: [system, ..., assistant, user] which is valid
+    // But if history ends with user, adding another user is also valid
+    conversationHistory.push({ role: 'user', content: text })
+  } else {
+    // History is empty or ends with user - add user message
+    conversationHistory.push({ role: 'user', content: text })
+  }
 
   turnCount++
   updateProgress()

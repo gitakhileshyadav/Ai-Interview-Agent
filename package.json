@@ -15,5 +15,21 @@
   },
   "devDependencies": {
     "vite": "^5.4.2"
-  }
+  },
+  "description": "A web-based AI interview practice platform that lets you practice interviews with an AI interviewer, get detailed performance analytics, and track your progress over time.",
+  "main": "vite.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gitakhileshyadav/Ai-Interview-Agent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gitakhileshyadav/Ai-Interview-Agent/issues"
+  },
+  "homepage": "https://github.com/gitakhileshyadav/Ai-Interview-Agent#readme"
 }
