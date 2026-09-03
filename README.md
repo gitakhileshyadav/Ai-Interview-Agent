@@ -1,158 +1,98 @@
 # InterviewAI
 
-A web-based AI interview practice platform that lets you practice interviews with an AI interviewer, get detailed performance analytics, and track your progress over time.
+A web-based AI interview practice platform that helps you practice interviews with an AI interviewer, get detailed performance analytics, and track your progress over time.
 
 ![InterviewAI](public/favicon.svg)
 
 ## 🚀 Features
 
 - **Voice-enabled interviews** - Speak naturally with real-time speech recognition and text-to-speech
-- **AI interviewer** ("Alex") powered by LLaMA 3.3-70B, conversational and professional
-- **Three interview types**: Technical (coding/system design), Behavioral (STAR method), HR (culture fit)
-- **Experience levels**: Junior, Mid, Senior, Lead/Principal
+- **AI interviewer** - Conversational and professional AI interviewer
+- **Three interview types** - Technical, Behavioral, HR
+- **Experience levels** - Junior, Mid, Senior, Lead
 - **Authentication** - Register/login with secure JWT storage
 - **Performance charts** - Radar, line trend, and bar charts showing skill development
-- **Detailed reports** - Overall score + communication, technical, confidence, problem-solving breakdowns
+- **Detailed reports** - Overall score + section breakdowns
 - **Full transcript** - Complete interview transcript with AI and candidate messages
-- **Progress tracking** - Session history, completion rates, score improvements
+- **Progress tracking** - Session history and score improvements
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-- **Frontend**: Vite, ES Modules, Chart.js
-- **API**: Server-side proxies (Vercel) - no API keys in the browser
-- **Database**: Turso (SQLite-compatible)
+- **Frontend**: Vite + Vanilla JavaScript (ES Modules)
+- **API**: Server-side proxies (no API keys in the browser)
+- **Database**: Turso (SQLite-compatible, embedded SQL)
 - **Speech**: Web Speech API (Chrome/Edge native)
-- **AI**: LLaMA 3.3-70B via server-side proxy
-- **Styling**: CSS custom properties, modern gradient design
+- **Deployment**: Vercel-ready
 
 ## 📋 Prerequisites
 
-- Node.js 18+
+- Node.js v18+
 - Chrome or Edge browser (Web Speech API support)
-- Turso database account (for persistent data)
+- API keys for AI functionality (configured on server)
 
-## 🔧 Installation
+## 🛠️ Installation
 
 ```bash
 # Clone the repository
-git clone 
+git clone <repository-url>
+cd interview-voice-agent
 
 # Install dependencies
 npm install
 
-# Set up environment variables
-cp .env.example .env  # Or create .env with required variables
-```
-
-## 🌿 Environment Variables
-
-Create a `.env` file in the project root:
-
-```
-# Vercel deployment URL (for API proxy routes)
-VERCEL_URL=your-vercel-url
-
-# Optional: Customize app configuration
-VITE_APP_NAME=InterviewAI
-VITE_APP_VERSION=1.0.0
-```
-
-The `.env` file is already gitignored - secrets stay server-side.
-
-## ▶️ Running the App
-
-```bash
-# Start development server (Vite, port 5173)
+# Run development server
 npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
 ```
 
 The app runs at `http://localhost:5173` by default.
 
 ## 🎯 How to Use
 
-### 1. **Register / Login**
-- Navigate to `/login` or `/register`
-- Create an account with name, email, and password
-- JWT token stored in localStorage for authenticated routes
-
-### 2. **Start an Interview**
-- Go to `/interview` (requires authentication)
-- Select your **target role** (e.g., Software Engineer)
-- Choose **interview type**: Technical, Behavioral, or HR
-- Select **experience level**: Junior, Mid, Senior, or Lead
-- Click "Start Interview" - Alex will begin the conversation
-
-### 3. **During the Interview**
-- Click the microphone button to speak your answers
-- Alex will listen, respond, and ask follow-up questions
-- Progress tracker shows question number and percentage complete
-- Real-time transcript displays the conversation
-
-### 4. **View Your Report**
-- Interview auto-ends after 12 questions or click "End Interview"
-- Navigate to `/report/{sessionId}` to view your detailed analysis
-- See overall score + section breakdowns
-- Review strengths, weaknesses, and actionable recommendations
-- Read the full transcript and export via print
-
-### 5. **Track Progress**
-- Dashboard at `/dashboard` shows your session history
-- Charts visualize scores over time and by interview type
-- Stat cards track total sessions, completion rate, average/best scores
+1. **Register/Login** - Create an account or log in
+2. **Navigate to Interview** - Go to `#/interview` (authentication required)
+3. **Configure Session** - Select role, interview type, and experience level
+4. **Start Interview** - AI interviewer begins the conversation
+5. **Speak your answers** - Click microphone, respond verbally
+6. **View Report** - After interview, access `#/report/{sessionId}`
+7. **Check Dashboard** - Review performance history and analytics
 
 ## 📁 Project Structure
 
 ```
 interview-voice-agent/
 ├── .env                    # Environment config (gitignored)
-├ .gitignore               # Git ignore rules
+├── .gitignore              # Git ignore rules
 ├── index.html              # Entry point
 ├── package.json            # Dependencies and scripts
-├── vite.config.js          # Vite configuration with API proxy
-├── vercel.json           # Vercel deployment config
-├── dist/                   # Production build output
+├── vite.config.js          # Vite configuration
+├── vercel.json             # Vercel deployment config
+│
+├── src/                    # Source code
+│   ├── main.js            # App entry, router, toast system
+│   ├── config.js          # Client config (no secrets)
+│   ├── pages/            # Page components
+│   ├── components/       # Reusable UI components
+│   ├── styles/           # CSS stylesheets
+│   └── services/         # API service modules
+│
+├── api/                    # Serverless API routes
+│   ├── auth/             # Auth handlers
+│   ├── chat.mjs          # AI chat proxy
+│   ├── db.mjs            # Database operations proxy
+│   └── lib/              # Database utilities
 │
 ├── public/                 # Static assets
 │   ├── 404.html
 │   └── favicon.svg
 │
-├── src/
-│   ├── main.js             # App entry, router, toast system
-│   ├── config.js           # Client config (no secrets)
-│   ├── styles/             # CSS per-page styles
-│   │   ├── main.css
-│   ├── auth.css
-│   ├── dashboard.css
-│   └── interview.css
-│   ├── pages/              # Page components
-│   │   ├── login.js
-│   │   ├── register.js
-│   │   ├── dashboard.js
-│   │   ├── interview.js
-│   │   └── report.js
-│   ├── components/         # Reusable components
-│   │   └── charts.js       # Chart.js radar/line/bar charts
-│   └── services/           # API service modules
-│       ├── auth.js         # Register, login, getCurrentUser, logout
-│       ├── turso.js        # Database operations (server proxy)
-│       ├── interview.js    # AI interviewer engine
-│       └── speech.js       # Web Speech API wrapper
-│
-└── api/                    # Serverless API routes (Vercel)
-    ├── auth/
-    │   └── route.mjs
-    ├── chat.mjs          # AI chat proxy
-    ├── db.mjs            # Database operations proxy
-    └── lib/              # Database utilities
+└── docs/                   # Documentation folder
+    ├── Getting-Started.md
+    ├── Project-Overview.md
+    ├── File-Reference.md
+    └── Tutorial-Flow.md
 ```
 
-## 🔌 API Routes
+## 📋 API Routes
 
 All API calls are proxied server-side - no external keys reach the browser:
 
@@ -162,37 +102,11 @@ All API calls are proxied server-side - no external keys reach the browser:
 | `POST /api/auth/login` | User login |
 | `GET /api/auth/me` | Get current user (validates token) |
 | `POST /api/db` | Execute SQL statements |
-| `POST /api/chat` | AI chat completion (LLaMA 3.3-70B) |
-
-## 🗄️ Database Schema
-
-Key tables (managed server-side via Turso):
-
-- **users** - id, name, email, password_hash, created_at
-- **sessions** - id, user_id, title, role, interview_type, experience_level, status, score, duration, created_at, completed_at
-- **messages** - id, session_id, role, content, timestamp
-- **analysis** - id, session_id, strengths, weaknesses, overall_score, communication_score, technical_score, confidence_score, problem_solving_score, summary, recommendations, created_at
-
-## 🚀 Deployment
-
-This project is configured for **Vercel** deployment (`vercel.json` included):
-
-```bash
-vercel
-```
-
-The Vite config proxies API calls during development:
-- `localhost:5173/api/*` → `http://localhost:3000` (local dev)
-- Production proxies to your Vercel deployment URL
-
-## 📦 Built With
-
-- [Vite](https://vitejs.dev/) - Frontend tooling
-- [Chart.js](https://chartjs.org/) - Data visualization
-- [Turso](https://turso.tech/) - Embedded SQL database
-- [Web Speech API] - Browser-native speech recognition & synthesis
-- [LLaMA 3.3-70B] - AI model via server proxy
+| `POST /api/chat` | AI chat completion |
 
 ## 📄 License
 
 Private - All rights reserved.
+
+---
+*This README does not reference specific model names to maintain generality.*
