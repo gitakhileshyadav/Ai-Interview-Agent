@@ -122,6 +122,12 @@ export async function getUserById(id) {
 // ─── Session Operations ─────────────────────────────────────────────────────
 
 export async function createSession({ id, userId, title, role, interviewType, experienceLevel }) {
+  if (!id || typeof id !== 'string' || id.trim() === '') {
+    throw new Error('Session ID is required and must be a non-empty string')
+  }
+  if (!userId) {
+    throw new Error('User ID is required to create a session')
+  }
   await execute(
     'INSERT INTO sessions (id, user_id, title, role, interview_type, experience_level) VALUES (?, ?, ?, ?, ?, ?)',
     [id, userId, title, role, interviewType, experienceLevel]
@@ -130,14 +136,14 @@ export async function createSession({ id, userId, title, role, interviewType, ex
 
 export async function getSessionsByUser(userId) {
   const result = await execute(
-    'SELECT * FROM sessions WHERE user_id = ? ORDER BY created_at DESC',
+    'SELECT rowid, * FROM sessions WHERE user_id = ? ORDER BY created_at DESC',
     [userId]
   )
   return rowsToObjects(result)
 }
 
 export async function getSessionById(id) {
-  const result = await execute('SELECT * FROM sessions WHERE id = ? LIMIT 1', [id])
+  const result = await execute('SELECT rowid, * FROM sessions WHERE id = ? LIMIT 1', [id])
   const rows = rowsToObjects(result)
   return rows[0] || null
 }
@@ -151,13 +157,12 @@ export async function completeSession(id, score, duration) {
 
 export async function deleteSession(sessionId) {
   const token = getToken()
-  const res = await fetch('/api/session', {
+  const res = await fetch(`/api/session?id=${encodeURIComponent(sessionId)}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-    },
-    body: JSON.stringify({ sessionId })
+    }
   })
 
   const data = await res.json().catch(() => ({}))
