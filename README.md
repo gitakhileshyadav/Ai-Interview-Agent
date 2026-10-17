@@ -2,7 +2,6 @@
 
 A web-based AI interview practice platform that helps you practice interviews with an AI interviewer, get detailed performance analytics, and track your progress over time.
 
-![InterviewAI](public/favicon.svg)
 
 ## 🚀 Features
 

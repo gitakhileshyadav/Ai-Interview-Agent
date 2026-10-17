@@ -162,3 +162,20 @@ export async function updateUserPassword(email, name, passwordHash) {
     [name, passwordHash, email]
   )
 }
+
+export async function deleteSession(sessionId, userId) {
+  await batch([
+    {
+      sql: 'DELETE FROM messages WHERE session_id = ?',
+      args: [sessionId]
+    },
+    {
+      sql: 'DELETE FROM analysis WHERE session_id = ?',
+      args: [sessionId]
+    },
+    {
+      sql: 'DELETE FROM sessions WHERE id = ? AND user_id = ?',
+      args: [sessionId, userId]
+    }
+  ])
+}

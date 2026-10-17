@@ -1,6 +1,6 @@
 // dashboard.js — Main dashboard with charts and session management
 import { requireAuth, logout } from '../services/auth.js'
-import { getUserStats, getSessionsByUser } from '../services/turso.js'
+import { getUserStats, getSessionsByUser, deleteSession } from '../services/turso.js'
 import { renderCharts } from '../components/charts.js'
 import { showToast } from '../main.js'
 
@@ -139,6 +139,26 @@ export async function initDashboard() {
   document.getElementById('new-interview-btn')?.addEventListener('click', startInterview)
   document.getElementById('new-interview-btn-2')?.addEventListener('click', startInterview)
 
+  // Delete session handler (event delegation)
+  const sessionsList = document.getElementById('sessions-list')
+  if (sessionsList) {
+    sessionsList.addEventListener('click', (e) => {
+      const deleteBtn = e.target.closest('.session-delete-btn')
+      if (!deleteBtn) return
+      const sessionItem = deleteBtn.closest('.session-item')
+      const sessionId = sessionItem.dataset.sessionId
+      if (confirm('Delete this session?')) {
+        deleteSession(sessionId).then(() => {
+          showToast('Session deleted', 'info')
+          // Reload dashboard to refresh stats and session list
+          initDashboard()
+        }).catch(err => {
+          showToast(err.message, 'error')
+        })
+      }
+    })
+  }
+
   // Load data
   try {
     const [stats, sessions] = await Promise.all([
@@ -190,7 +210,7 @@ function renderSessions(sessions) {
   const typeLabel = { technical: 'Technical', behavioral: 'Behavioral', hr: 'HR Round' }
 
   list.innerHTML = sessions.slice(0, 8).map(s => `
-    <div class="session-item" onclick="window.location.hash='#/report/${s.id}'" role="button" tabindex="0">
+    <div class="session-item" onclick="window.location.hash='#/report/${s.id}'" role="button" tabindex="0" data-session-id="${s.id}">
       <div class="session-icon">${typeEmoji[s.interview_type] || '🎙️'}</div>
       <div class="session-info">
         <div class="session-title">${s.title || `${s.role} Interview`}</div>
@@ -202,6 +222,7 @@ function renderSessions(sessions) {
           <span>${formatDate(s.created_at)}</span>
         </div>
       </div>
+      <button class="session-delete-btn" aria-label="Delete session">🗑️</button>
       <div class="session-score">
         ${s.status === 'completed'
           ? `<span class="score-value">${s.score}%</span><span class="badge badge-success">Done</span>`

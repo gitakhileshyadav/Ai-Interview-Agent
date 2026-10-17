@@ -149,6 +149,22 @@ export async function completeSession(id, score, duration) {
   )
 }
 
+export async function deleteSession(sessionId) {
+  const token = getToken()
+  const res = await fetch('/api/session', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    },
+    body: JSON.stringify({ sessionId })
+  })
+
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || `Delete error (${res.status})`)
+  return data
+}
+
 // ─── Message Operations ─────────────────────────────────────────────────────
 
 export async function saveMessage({ id, sessionId, role, content }) {

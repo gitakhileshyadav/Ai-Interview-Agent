@@ -278,6 +278,23 @@
   transform: translateX(4px);
 }
 
+.session-delete-btn {
+  all: unset;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  background: rgba(239,68,68,0.12);
+  color: var(--color-error);
+  font-size: 0.75rem;
+  transition: background var(--transition-base);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.session-delete-btn:hover {
+  background: rgba(239,68,68,0.2);
+}
+
 .session-icon {
   width: 44px;
   height: 44px;
