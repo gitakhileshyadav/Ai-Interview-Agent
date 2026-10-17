@@ -4,6 +4,8 @@ import { getUserStats, getSessionsByUser, deleteSession } from '../services/turs
 import { renderCharts } from '../components/charts.js'
 import { showToast } from '../main.js'
 
+let visibleSessionCount = 8
+
 export async function renderDashboard() {
   const user = await requireAuth()
   if (!user) return ''
@@ -129,6 +131,8 @@ export async function initDashboard() {
   const user = await requireAuth()
   if (!user) return
 
+  visibleSessionCount = 8
+
   // Button handlers
   document.getElementById('logout-btn')?.addEventListener('click', () => {
     logout()
@@ -209,7 +213,10 @@ function renderSessions(sessions) {
   const typeEmoji = { technical: '⚙️', behavioral: '🤝', hr: '👥' }
   const typeLabel = { technical: 'Technical', behavioral: 'Behavioral', hr: 'HR Round' }
 
-  list.innerHTML = sessions.slice(0, 8).map(s => {
+  const visibleSessions = sessions.slice(0, visibleSessionCount)
+  const remaining = sessions.length - visibleSessions.length
+
+  let html = visibleSessions.map(s => {
     const deleteId = (s.id && String(s.id).trim() !== '') ? s.id : `rowid:${s.rowid}`
     const hasValidId = s.id && String(s.id).trim() !== ''
     return `
@@ -235,6 +242,21 @@ function renderSessions(sessions) {
       </div>
     </div>
   `}).join('')
+
+  if (remaining > 0) {
+    html += `
+      <button class="btn btn-secondary btn-sm" id="show-more-btn" style="margin-top:1rem;width:100%;">
+        Show More (${remaining} remaining)
+      </button>
+    `
+  }
+
+  list.innerHTML = html
+
+  document.getElementById('show-more-btn')?.addEventListener('click', () => {
+    visibleSessionCount += 8
+    renderSessions(sessions)
+  })
 }
 
 function getTimeOfDay() {

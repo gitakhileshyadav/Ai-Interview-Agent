@@ -295,6 +295,11 @@
   background: rgba(239,68,68,0.2);
 }
 
+.show-more-btn {
+  margin-top: 1rem;
+  width: 100%;
+}
+
 .session-icon {
   width: 44px;
   height: 44px;
