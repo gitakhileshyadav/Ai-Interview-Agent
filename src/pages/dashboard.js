@@ -217,10 +217,8 @@ function renderSessions(sessions) {
   const remaining = sessions.length - visibleSessions.length
 
   let html = visibleSessions.map(s => {
-    const deleteId = (s.id && String(s.id).trim() !== '') ? s.id : `rowid:${s.rowid}`
-    const hasValidId = s.id && String(s.id).trim() !== ''
     return `
-    <div class="session-item" ${hasValidId ? `onclick="window.location.hash='#/report/${s.id}'"` : 'style="opacity:0.75;cursor:default"'} role="button" tabindex="0" data-session-id="${deleteId}">
+    <div class="session-item" onclick="window.location.hash='#/report/${s.id}'" role="button" tabindex="0" data-session-id="${s.id}">
       <div class="session-icon">${typeEmoji[s.interview_type] || '🎙️'}</div>
       <div class="session-info">
         <div class="session-title">${s.title || `${s.role || 'Unknown'} Interview`}</div>
@@ -230,7 +228,6 @@ function renderSessions(sessions) {
           <span>${s.experience_level || 'Mid-level'}</span>
           <span>·</span>
           <span>${formatDate(s.created_at)}</span>
-          ${!hasValidId ? '<span title="Session ID missing — orphaned session">⚠️</span>' : ''}
         </div>
       </div>
       <button class="session-delete-btn" aria-label="Delete session">🗑️</button>

@@ -149,7 +149,8 @@ export async function initInterview() {
 
     try {
       // Create session in DB
-      sessionId = crypto.randomUUID?.() ?? `sess_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+      sessionId = crypto.randomUUID()
+      if (!sessionId) sessionId = `sess_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
       await createSession({
         id: sessionId,
         userId: user.id,

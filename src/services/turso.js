@@ -136,14 +136,14 @@ export async function createSession({ id, userId, title, role, interviewType, ex
 
 export async function getSessionsByUser(userId) {
   const result = await execute(
-    'SELECT rowid, * FROM sessions WHERE user_id = ? ORDER BY created_at DESC',
+    'SELECT * FROM sessions WHERE user_id = ? ORDER BY created_at DESC',
     [userId]
   )
   return rowsToObjects(result)
 }
 
 export async function getSessionById(id) {
-  const result = await execute('SELECT rowid, * FROM sessions WHERE id = ? LIMIT 1', [id])
+  const result = await execute('SELECT * FROM sessions WHERE id = ? LIMIT 1', [id])
   const rows = rowsToObjects(result)
   return rows[0] || null
 }
