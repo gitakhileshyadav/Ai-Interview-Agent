@@ -33,7 +33,7 @@ A web-based AI interview practice platform that helps you practice interviews wi
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/gitakhileshyadav/Ai-Interview-Agent.git
 cd interview-voice-agent
 
 # Install dependencies
