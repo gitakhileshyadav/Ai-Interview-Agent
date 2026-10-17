@@ -1,6 +1,6 @@
 // session.mjs — Serverless endpoint for session CRUD operations
 import { requireAuth, sendJSON } from './lib/auth.mjs'
-import { execute } from './lib/db.mjs'
+import { execute, rowsToObjects } from './lib/db.mjs'
 
 export default async function handler(req, res) {
   const user = await requireAuth(req, res)
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         'SELECT id, user_id, title FROM sessions WHERE rowid = ? LIMIT 1',
         [sessionId]
       )
-      const session = sessionResult.rows[0]
+      const session = rowsToObjects(sessionResult)[0]
       if (!session) {
         sendJSON(res, 404, { error: 'Session not found' })
         return
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
       'SELECT id, user_id, title FROM sessions WHERE id = ? LIMIT 1',
       [sessionId]
     )
-    const session = sessionResult.rows[0]
+    const session = rowsToObjects(sessionResult)[0]
     if (!session) {
       sendJSON(res, 404, { error: 'Session not found' })
       return
@@ -73,7 +73,7 @@ export default async function handler(req, res) {
       'SELECT id, user_id, title, role, interview_type, experience_level, status, score, duration, created_at, completed_at FROM sessions WHERE id = ? LIMIT 1',
       [sessionId]
     )
-    const session = result.rows[0]
+    const session = rowsToObjects(result)[0]
     if (!session) {
       sendJSON(res, 404, { error: 'Session not found' })
       return
